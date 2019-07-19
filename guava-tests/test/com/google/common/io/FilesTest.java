@@ -123,8 +123,12 @@ public class FilesTest extends IoTestCase {
 
     public void testWriteString() throws IOException {
         File temp = createTempFile();
-        Files.write(I18N, temp, Charsets.UTF_16LE);
-        assertEquals(I18N, Files.toString(temp, Charsets.UTF_16LE));
+//        Files.write(I18N, temp, Charsets.UTF_16LE);
+//        assertEquals(I18N, Files.toString(temp, Charsets.UTF_16LE));
+
+        Files.asCharSink(temp,Charsets.UTF_16LE).write(I18N);
+        assertEquals(I18N, Files.asCharSource(temp, Charsets.UTF_16LE).read());
+
     }
 
     public void testWriteBytes() throws IOException {
