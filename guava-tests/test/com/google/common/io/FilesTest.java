@@ -184,7 +184,8 @@ public class FilesTest extends IoTestCase {
         assertEquals(I18N, Files.asCharSource(temp, Charsets.UTF_8).read());
     }
 
-    //文件拷贝，两个文件不能是同一个。
+    //文件拷贝，两个文件内容不能相同。
+    //这个有待测试。todo ljj1
     public void testCopyEqualFiles() throws IOException {
         File temp1 = createTempFile();
         File temp2 = file(temp1.getPath());
@@ -204,6 +205,7 @@ public class FilesTest extends IoTestCase {
         assertEquals(ASCII, Files.asCharSource(temp1, Charsets.UTF_8).read());
     }
 
+    //文件拷贝，两个文件不能是同一个。
     public void testCopySameFile() throws IOException {
         File temp = createTempFile();
         Files.write(ASCII, temp, Charsets.UTF_8);
