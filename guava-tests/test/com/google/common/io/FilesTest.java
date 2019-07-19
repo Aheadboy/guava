@@ -146,12 +146,19 @@ public class FilesTest extends IoTestCase {
 
     public void testAppendString() throws IOException {
         File temp = createTempFile();
-        Files.append(I18N, temp, Charsets.UTF_16LE);
-        assertEquals(I18N, Files.toString(temp, Charsets.UTF_16LE));
-        Files.append(I18N, temp, Charsets.UTF_16LE);
-        assertEquals(I18N + I18N, Files.toString(temp, Charsets.UTF_16LE));
-        Files.append(I18N, temp, Charsets.UTF_16LE);
-        assertEquals(I18N + I18N + I18N, Files.toString(temp, Charsets.UTF_16LE));
+//        Files.append(I18N, temp, Charsets.UTF_16LE);
+//        assertEquals(I18N, Files.toString(temp, Charsets.UTF_16LE));
+//        Files.append(I18N, temp, Charsets.UTF_16LE);
+//        assertEquals(I18N + I18N, Files.toString(temp, Charsets.UTF_16LE));
+//        Files.append(I18N, temp, Charsets.UTF_16LE);
+//        assertEquals(I18N + I18N + I18N, Files.toString(temp, Charsets.UTF_16LE));
+
+        Files.asCharSink(temp,Charsets.UTF_16LE,FileWriteMode.APPEND).write(I18N);
+        assertEquals(I18N, Files.asCharSource(temp, Charsets.UTF_16LE).read());
+        Files.asCharSink(temp,Charsets.UTF_16LE,FileWriteMode.APPEND).write(I18N);
+        assertEquals(I18N + I18N, Files.asCharSource(temp, Charsets.UTF_16LE).read());
+        Files.asCharSink(temp,Charsets.UTF_16LE,FileWriteMode.APPEND).write(I18N);
+        assertEquals(I18N + I18N + I18N, Files.asCharSource(temp, Charsets.UTF_16LE).read());
     }
 
     public void testCopyToOutputStream() throws IOException {
