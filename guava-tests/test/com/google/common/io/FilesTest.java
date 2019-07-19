@@ -171,7 +171,8 @@ public class FilesTest extends IoTestCase {
     public void testCopyToAppendable() throws IOException {
         File i18nFile = getTestFile("i18n.txt");
         StringBuilder sb = new StringBuilder();
-        Files.copy(i18nFile, Charsets.UTF_8, sb);
+//        Files.copy(i18nFile, Charsets.UTF_8, sb);
+        Files.asCharSource(i18nFile,Charsets.UTF_8).copyTo(sb);
         assertEquals(I18N, sb.toString());
     }
 
