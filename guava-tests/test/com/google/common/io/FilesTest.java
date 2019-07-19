@@ -126,7 +126,7 @@ public class FilesTest extends IoTestCase {
 //        Files.write(I18N, temp, Charsets.UTF_16LE);
 //        assertEquals(I18N, Files.toString(temp, Charsets.UTF_16LE));
 
-        Files.asCharSink(temp,Charsets.UTF_16LE).write(I18N);
+        Files.asCharSink(temp, Charsets.UTF_16LE).write(I18N);
         assertEquals(I18N, Files.asCharSource(temp, Charsets.UTF_16LE).read());
 
     }
@@ -153,11 +153,11 @@ public class FilesTest extends IoTestCase {
 //        Files.append(I18N, temp, Charsets.UTF_16LE);
 //        assertEquals(I18N + I18N + I18N, Files.toString(temp, Charsets.UTF_16LE));
 
-        Files.asCharSink(temp,Charsets.UTF_16LE,FileWriteMode.APPEND).write(I18N);
+        Files.asCharSink(temp, Charsets.UTF_16LE, FileWriteMode.APPEND).write(I18N);
         assertEquals(I18N, Files.asCharSource(temp, Charsets.UTF_16LE).read());
-        Files.asCharSink(temp,Charsets.UTF_16LE,FileWriteMode.APPEND).write(I18N);
+        Files.asCharSink(temp, Charsets.UTF_16LE, FileWriteMode.APPEND).write(I18N);
         assertEquals(I18N + I18N, Files.asCharSource(temp, Charsets.UTF_16LE).read());
-        Files.asCharSink(temp,Charsets.UTF_16LE,FileWriteMode.APPEND).write(I18N);
+        Files.asCharSink(temp, Charsets.UTF_16LE, FileWriteMode.APPEND).write(I18N);
         assertEquals(I18N + I18N + I18N, Files.asCharSource(temp, Charsets.UTF_16LE).read());
     }
 
@@ -172,7 +172,7 @@ public class FilesTest extends IoTestCase {
         File i18nFile = getTestFile("i18n.txt");
         StringBuilder sb = new StringBuilder();
 //        Files.copy(i18nFile, Charsets.UTF_8, sb);
-        Files.asCharSource(i18nFile,Charsets.UTF_8).copyTo(sb);
+        Files.asCharSource(i18nFile, Charsets.UTF_8).copyTo(sb);
         assertEquals(I18N, sb.toString());
     }
 
@@ -180,20 +180,24 @@ public class FilesTest extends IoTestCase {
         File i18nFile = getTestFile("i18n.txt");
         File temp = createTempFile();
         Files.copy(i18nFile, temp);
-        assertEquals(I18N, Files.toString(temp, Charsets.UTF_8));
+//        assertEquals(I18N, Files.toString(temp, Charsets.UTF_8));
+        assertEquals(I18N, Files.asCharSource(temp, Charsets.UTF_8).read());
     }
 
+    //文件拷贝，两个文件不能是同一个。哪怕修改了文件。
     public void testCopyEqualFiles() throws IOException {
         File temp1 = createTempFile();
         File temp2 = file(temp1.getPath());
         assertEquals(temp1, temp2);
-        Files.write(ASCII, temp1, Charsets.UTF_8);
+//        Files.write(ASCII, temp1, Charsets.UTF_8);
+        Files.asCharSink(temp1, Charsets.UTF_8).write(ASCII);
         try {
             Files.copy(temp1, temp2);
             fail("Expected an IAE to be thrown but wasn't");
         } catch (IllegalArgumentException expected) {
         }
-        assertEquals(ASCII, Files.toString(temp1, Charsets.UTF_8));
+//        assertEquals(ASCII, Files.toString(temp1, Charsets.UTF_8));
+        assertEquals(ASCII, Files.asCharSource(temp1, Charsets.UTF_8).read());
     }
 
     public void testCopySameFile() throws IOException {
