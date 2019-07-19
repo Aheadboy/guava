@@ -184,13 +184,17 @@ public class FilesTest extends IoTestCase {
         assertEquals(I18N, Files.asCharSource(temp, Charsets.UTF_8).read());
     }
 
-    //文件拷贝，两个文件不能是同一个。哪怕修改了文件。
+    //文件拷贝，两个文件不能是同一个。
     public void testCopyEqualFiles() throws IOException {
         File temp1 = createTempFile();
         File temp2 = file(temp1.getPath());
         assertEquals(temp1, temp2);
 //        Files.write(ASCII, temp1, Charsets.UTF_8);
         Files.asCharSink(temp1, Charsets.UTF_8).write(ASCII);
+        assertEquals(Files.asCharSource(temp1,Charsets.UTF_8).read(),ASCII);
+        assertThat(Files.asCharSource(temp2,Charsets.UTF_8).read()).isNotEqualTo("");
+
+
         try {
             Files.copy(temp1, temp2);
             fail("Expected an IAE to be thrown but wasn't");
