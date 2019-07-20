@@ -251,6 +251,7 @@ public class FilesTest extends IoTestCase {
         assertTrue(Files.equal(asciiFile, asciiFile));
 
         File temp = createTempFile();
+        assertFalse(Files.equal(asciiFile,temp));
         Files.copy(asciiFile, temp);
         assertTrue(Files.equal(asciiFile, temp));
 
