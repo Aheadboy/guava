@@ -184,30 +184,48 @@ public class FilesTest extends IoTestCase {
         assertEquals(I18N, Files.asCharSource(temp, Charsets.UTF_8).read());
     }
 
-    //文件拷贝，两个文件内容不能相同。
-    //这个有待测试。todo ljj1
+    // @throws IllegalArgumentException if {@code from.equals(to)}
+    //java File equals 判断的是文件路径
     public void testCopyEqualFiles() throws IOException {
         File temp1 = createTempFile();
         File temp2 = file(temp1.getPath());
         assertEquals(temp1, temp2);
-//        Files.write(ASCII, temp1, Charsets.UTF_8);
         Files.asCharSink(temp1, Charsets.UTF_8).write(ASCII);
-        assertEquals(Files.asCharSource(temp1,Charsets.UTF_8).read(),ASCII);
-        assertThat(Files.asCharSource(temp2,Charsets.UTF_8).read()).isNotEqualTo("");
-
-
+        assertEquals(Files.asCharSource(temp1, Charsets.UTF_8).read(), ASCII);
+        assertThat(Files.asCharSource(temp2, Charsets.UTF_8).read()).isNotEqualTo("");
         try {
             Files.copy(temp1, temp2);
             fail("Expected an IAE to be thrown but wasn't");
         } catch (IllegalArgumentException expected) {
         }
-//        assertEquals(ASCII, Files.toString(temp1, Charsets.UTF_8));
+        assertEquals(ASCII, Files.asCharSource(temp1, Charsets.UTF_8).read());
+    }
+
+    //文件拷贝;不同的两个文件，如果内容相同，可以拷贝。不会抛出异常
+    public void testCopyContentEqualFiles() throws IOException {
+        File temp1 = createTempFile();
+        File temp2 = createTempFile();
+
+        Files.asCharSink(temp1, Charsets.UTF_8).write(ASCII);
+        assertEquals(Files.asCharSource(temp1, Charsets.UTF_8).read(), ASCII);
+        Files.asCharSink(temp2, Charsets.UTF_8).write(ASCII);
+        assertEquals(Files.asCharSource(temp2, Charsets.UTF_8).read(), ASCII);
+
+
+        assertThat(Files.asCharSource(temp2, Charsets.UTF_8).read()).isNotEqualTo("");
+
+
+        try {
+            Files.copy(temp1, temp2);
+        } catch (IllegalArgumentException expected) {
+        }
         assertEquals(ASCII, Files.asCharSource(temp1, Charsets.UTF_8).read());
     }
 
     //文件拷贝，两个文件不能是同一个。
     public void testCopySameFile() throws IOException {
         File temp = createTempFile();
+        File temp2 = temp;
         Files.write(ASCII, temp, Charsets.UTF_8);
         try {
             Files.copy(temp, temp);
